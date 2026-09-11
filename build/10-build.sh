@@ -43,7 +43,10 @@ echo "::group:: Install Packages"
 
 # Install the default packages and verify the DNF cache is working.
 # gum is required by the default ujust recipes for interactive prompts.
-dnf5 install -y tmux gum
+dnf5 install -y tmux gum mc
+
+# Install Dank Material Shell and Niri
+curl -fsSL https://install.danklinux.com | sh
 
 # Example using COPR with isolated pattern:
 # copr_install_isolated "ublue-os/staging" package-name
