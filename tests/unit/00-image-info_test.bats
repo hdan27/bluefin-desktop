@@ -33,13 +33,13 @@ setup() {
     export IMAGE_VENDOR="projectbluefin"
     export UBLUE_IMAGE_TAG="latest"
     export BASE_IMAGE_NAME="silverblue"
-    export FEDORA_MAJOR_VERSION="42"
+    export FEDORA_MAJOR_VERSION="44"
 
     # A stock os-release with no VARIANT_ID, matching a fresh Fedora base image.
     cat >"${OS_RELEASE}" <<'EOF'
 NAME="Fedora Linux"
 ID=fedora
-VERSION_ID=42
+VERSION_ID=44
 EOF
 }
 
@@ -79,7 +79,7 @@ json_field() {
     [ "$(json_field image-vendor)" = "projectbluefin" ]
     [ "$(json_field image-tag)" = "latest" ]
     [ "$(json_field base-image-name)" = "silverblue" ]
-    [ "$(json_field fedora-version)" = "42" ]
+    [ "$(json_field fedora-version)" = "44" ]
 }
 
 @test "00-image-info: image-ref is the signed ghcr ref bootc upgrades from" {
@@ -154,10 +154,10 @@ json_field() {
 }
 
 @test "00-image-info: IMAGE_VERSION uses VERSION when it is set" {
-    export VERSION="stable-42.20250531"
+    export VERSION="stable-44.20250531"
     run bash "${SCRIPT}"
     [ "$status" -eq 0 ]
-    grep -q '^IMAGE_VERSION="stable-42.20250531"$' "${OS_RELEASE}"
+    grep -q '^IMAGE_VERSION="stable-44.20250531"$' "${OS_RELEASE}"
 }
 
 @test "00-image-info: IMAGE_VERSION falls back to the image tag when VERSION is unset" {
