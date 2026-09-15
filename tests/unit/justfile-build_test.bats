@@ -121,10 +121,10 @@ podman_build_args() {
 }
 
 @test "build: accepts an unquoted FEDORA_MAJOR_VERSION ARG" {
-    printf 'ARG FEDORA_MAJOR_VERSION=42\nFROM scratch\n' >"${SANDBOX}/Containerfile"
+    printf 'ARG FEDORA_MAJOR_VERSION=44\nFROM scratch\n' >"${SANDBOX}/Containerfile"
     run_just build finpilot stable
     [ "$status" -eq 0 ]
-    [[ "$(podman_build_args)" == *"--build-arg VERSION=42.20260830"* ]]
+    [[ "$(podman_build_args)" == *"--build-arg VERSION=44.20260830"* ]]
 }
 
 @test "build: aborts when the Containerfile has no FEDORA_MAJOR_VERSION ARG" {
