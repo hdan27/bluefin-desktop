@@ -25,7 +25,7 @@ Here are the changes from Fedora Silverblue 44. This image swaps the GNOME sessi
 
 ### Added Packages (Build-time)
 
-- **System packages**: `tmux`, `gum`, `mc` — gum provides the interactive prompts used by the default ujust recipes.
+- **System packages**: `tmux`, `gum`, `mc` (gum provides the interactive prompts used by the default ujust recipes), plus a C/C++ toolchain for user-installed Rust development: `gcc`, `gcc-c++`, `glibc-devel` (cc/c++ linkers + crt objects), `make`, `pkgconf-pkg-config`, `openssl-devel` — so per-user `rustup` toolchains and `cargo install` builds link out of the box.
 - **DMS companions**: `matugen` (Material You theming), `dgop` (system metrics), `danksearch` (file search), `cava` (audio visualizer), `qt6-qtmultimedia` (system sounds), `wl-clipboard` + `cliphist` (clipboard history), `i2c-tools` (DDC backlight control).
 
 ### Added Applications (Runtime)

@@ -43,7 +43,11 @@ echo "::group:: Install Packages"
 
 # Install the default packages and verify the DNF cache is working.
 # gum is required by the default ujust recipes for interactive prompts.
-dnf5 install -y tmux gum mc
+# The C/C++ toolchain lets user-installed Rust link: gcc/gcc-c++ provide the
+# cc/c++ linkers rustc invokes, glibc-devel the crt objects and headers,
+# make/pkgconf-pkg-config/openssl-devel the common -sys crate dependencies
+# (so `cargo install just` and friends build out of the box).
+dnf5 install -y tmux gum mc gcc gcc-c++ glibc-devel make pkgconf-pkg-config openssl-devel
 
 # Example using COPR with isolated pattern:
 # copr_install_isolated "ublue-os/staging" package-name

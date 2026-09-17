@@ -62,7 +62,7 @@ release, update both the `FEDORA_MAJOR_VERSION` ARG and the base image tag.
 ### Template build script rules
 
 - **Default packages**: build scripts in the template must have **no extra packages installed by default** — only commented examples. Users add their own.
-- **Exception**: `dnf5 install -y tmux gum mc` in `build/10-build.sh` is intentional: tmux smoke-tests that the DNF cache is warm, gum is required by the ujust recipes' interactive prompts, mc is this fork's console file manager. Do not remove.
+- **Exception**: `dnf5 install -y tmux gum mc gcc gcc-c++ glibc-devel make pkgconf-pkg-config openssl-devel` in `build/10-build.sh` is intentional: tmux smoke-tests that the DNF cache is warm, gum is required by the ujust recipes' interactive prompts, mc is this fork's console file manager, and the gcc/g++/glibc-devel/make/pkgconf/openssl-devel set is the C/C++ toolchain that lets per-user Rust (rustup + `cargo install`) link — rustup stays user-installed because the Fedora `rustup` package only ships `rustup-init` (no `rustup` command, no toolchain). Do not remove.
 - Always use `dnf5` — never `dnf`, `yum`, or `rpm-ostree`
 - Always use `dnf5 install -y` (non-interactive)
 - COPR: enable → install → `copr_install_isolated` (auto-disables); never leave a repo enabled
