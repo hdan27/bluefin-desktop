@@ -12,28 +12,36 @@ Instead, you create your own OS repository based on this template, allowing full
 
 ## What Makes this Raptor Different?
 
-Here are the changes from [Base Image Name]. This image is based on [Bluefin/Bazzite/Aurora/etc] and includes these customizations:
+Here are the changes from Fedora Silverblue 44. This image swaps the GNOME session for a **niri + DankMaterialShell (DMS)** desktop:
+
+### Desktop Environment
+
+- **Window manager**: [niri](https://github.com/niri-wm/niri) (Fedora package) replaces GNOME Shell. The default session is `niri` (`niri-session`), wired up in `build/30-niri-desktop.sh`.
+- **Shell**: [DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell) (COPR `avengemedia/dms`) — bar, launcher (Super+Space), clipboard (Super+V), settings (Super+Comma), notification center, task manager, lock screen (Super+Alt+L). Started as the `dms.service` user unit bound to `niri.service`.
+- **Login screen**: `greetd` + `dms-greeter` (COPR `avengemedia/danklinux`) replaces GDM.
+- **Default compositor config**: `/etc/xdg/niri/config.kdl` (from `build/config/niri/config.kdl`) — upstream niri defaults plus the DMS keybinds, window rules, and environment. Users can generate their own DMS-managed config later with `dms setup`.
+- **X11 apps**: `xwayland-satellite`; niri ≥ 25.08 starts it on demand, no config needed.
+- Base apps from the image (Ptyxis terminal, Files, Software, Settings) are kept — they run fine under niri.
 
 ### Added Packages (Build-time)
 
-- **System packages**: `tmux` and `gum` — tmux is the template's package-manager cache smoke test, and gum provides the interactive prompts used by the default ujust recipes.
+- **System packages**: `tmux`, `gum`, `mc` — gum provides the interactive prompts used by the default ujust recipes.
+- **DMS companions**: `matugen` (Material You theming), `dgop` (system metrics), `danksearch` (file search), `cava` (audio visualizer), `qt6-qtmultimedia` (system sounds), `wl-clipboard` + `cliphist` (clipboard history), `i2c-tools` (DDC backlight control).
 
 ### Added Applications (Runtime)
 
-- **CLI Tools (Homebrew)**: neovim, helix - [brief explanation]
-- **GUI Apps (Flatpak)**: Spotify, Thunderbird - [brief explanation]
+- **GUI Apps (Flatpak)**: Firefox, [Dank Calendar](https://flathub.org/apps/com.danklinux.dankcalendar) — calendar app integrating with the DMS calendar widgets.
 
 ### Removed/Disabled
 
-- List anything removed from base image
+- **GNOME session stack**: `gnome-shell`, `gnome-session`, `gnome-session-wayland-session`, `gdm` (removed in `build/30-niri-desktop.sh`).
 
 ### Configuration Changes
 
-- Any systemd services enabled/disabled
-- Desktop environment changes
-- Other notable modifications
+- `greetd.service` enabled as the display manager; `/etc/greetd/config.toml` runs `dms-greeter --command niri` as the `greeter` user.
+- DMS autostarts with the niri session via `/usr/lib/systemd/user/niri.service.wants/dms.service` (image-wide equivalent of `systemctl --user add-wants niri.service dms`).
 
-_Last updated: [date]_
+_Last updated: 2026-09-16_
 
 > Replace the placeholders above with your actual customizations whenever you add or remove packages, apps, or configuration. This section is what tells users how your image differs from the base.
 

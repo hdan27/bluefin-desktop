@@ -145,7 +145,7 @@ teardown() {
 
     mapfile -t calls <"${DNF5_LOG}"
     [ "${#calls[@]}" -eq 1 ]
-    [ "${calls[0]}" = "install -y tmux gum" ]
+    [ "${calls[0]}" = "install -y tmux gum mc" ]
 }
 
 @test "10-build: enables exactly the podman and brew units" {
