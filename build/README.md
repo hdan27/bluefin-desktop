@@ -9,6 +9,7 @@ Scripts are named with a number prefix (e.g., `10-build.sh`, `20-onepassword.sh`
 ## Included Scripts
 
 - **`10-build.sh`** - Main build script for base system modifications, package installation, and service configuration
+- **`30-niri-desktop.sh`** - Desktop swap: replaces the GNOME session with niri + DankMaterialShell and GDM with greetd + dms-greeter (config sources in `config/niri/`)
 
 ## Example Scripts
 

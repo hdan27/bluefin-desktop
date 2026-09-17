@@ -29,6 +29,12 @@ setup() {
     printf 'ARG FEDORA_MAJOR_VERSION="44"\nFROM scratch\n' >"${SANDBOX}/Containerfile"
 
     export PATH="${STUB_BIN}:${PATH}"
+
+    # GitHub runners always export GITHUB_REPOSITORY_OWNER, which the Justfile
+    # resolves into IMAGE_VENDOR and the registry cache ref. The assertions in
+    # this file pin the *default* identity (projectbluefin), so scrub the
+    # runner variable to keep the sandbox hermetic between CI and local runs.
+    unset GITHUB_REPOSITORY_OWNER GITHUB_REPOSITORY
     export PODMAN_LOG SKOPEO_LOG
 
     # Deterministic clock: the recipe builds the version string from `date`.
@@ -121,10 +127,10 @@ podman_build_args() {
 }
 
 @test "build: accepts an unquoted FEDORA_MAJOR_VERSION ARG" {
-    printf 'ARG FEDORA_MAJOR_VERSION=42\nFROM scratch\n' >"${SANDBOX}/Containerfile"
+    printf 'ARG FEDORA_MAJOR_VERSION=44\nFROM scratch\n' >"${SANDBOX}/Containerfile"
     run_just build finpilot stable
     [ "$status" -eq 0 ]
-    [[ "$(podman_build_args)" == *"--build-arg VERSION=42.20260830"* ]]
+    [[ "$(podman_build_args)" == *"--build-arg VERSION=44.20260830"* ]]
 }
 
 @test "build: aborts when the Containerfile has no FEDORA_MAJOR_VERSION ARG" {

@@ -76,13 +76,13 @@ podman_calls() {
 }
 
 @test "tag-images: resolves the image id from the localhost-qualified default tag" {
-	run_tag_images finpilot stable "stable-42 latest"
+	run_tag_images finpilot stable "stable-44 latest"
 	[ "$status" -eq 0 ]
 	podman_calls | grep -Fxq 'inspect localhost/finpilot:stable'
 }
 
 @test "tag-images: untags the localhost default reference before re-tagging" {
-	run_tag_images finpilot stable "stable-42"
+	run_tag_images finpilot stable "stable-44"
 	[ "$status" -eq 0 ]
 
 	local untag_line tag_line
@@ -95,10 +95,10 @@ podman_calls() {
 }
 
 @test "tag-images: applies every tag in the whitespace-separated list" {
-	run_tag_images finpilot stable "stable-42 stable-42.20250101 latest"
+	run_tag_images finpilot stable "stable-44 stable-44.20250101 latest"
 	[ "$status" -eq 0 ]
-	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:stable-42'
-	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:stable-42.20250101'
+	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:stable-44'
+	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:stable-44.20250101'
 	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:latest'
 }
 
@@ -127,17 +127,17 @@ podman_calls() {
 }
 
 @test "tag-images: collapses repeated whitespace in the tag list" {
-	run_tag_images finpilot stable "  latest   stable-42  "
+	run_tag_images finpilot stable "  latest   stable-44  "
 	[ "$status" -eq 0 ]
 	[ "$(grep -c '^tag ' "${PODMAN_LOG}")" -eq 3 ]
 	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:latest'
-	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:stable-42'
+	podman_calls | grep -Fxq 'tag sha256:deadbeef finpilot:stable-44'
 }
 
 @test "tag-images: reports the tags it applied" {
-	run_tag_images finpilot stable "latest stable-42"
+	run_tag_images finpilot stable "latest stable-44"
 	[ "$status" -eq 0 ]
-	[[ "$output" == *"Tagged finpilot with: latest stable-42"* ]]
+	[[ "$output" == *"Tagged finpilot with: latest stable-44"* ]]
 }
 
 @test "tag-images: honours a PODMAN override from the environment" {
@@ -218,7 +218,7 @@ exit 0
 STUB
 	chmod +x "${STUB_BIN}/podman"
 
-	run_tag_images finpilot stable "latest stable-42"
+	run_tag_images finpilot stable "latest stable-44"
 	[ "$status" -ne 0 ]
 	# Aborts on the first failing tag rather than continuing the loop.
 	[ "$(grep -c '^tag ' "${PODMAN_LOG}")" -eq 1 ]

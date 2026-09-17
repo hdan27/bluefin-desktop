@@ -17,4 +17,5 @@
 #
 # See #324.
 build/*.sh
+local-install.sh
 .github/actions/**/*.sh
