@@ -29,6 +29,12 @@ setup() {
     printf 'ARG FEDORA_MAJOR_VERSION="44"\nFROM scratch\n' >"${SANDBOX}/Containerfile"
 
     export PATH="${STUB_BIN}:${PATH}"
+
+    # GitHub runners always export GITHUB_REPOSITORY_OWNER, which the Justfile
+    # resolves into IMAGE_VENDOR and the registry cache ref. The assertions in
+    # this file pin the *default* identity (projectbluefin), so scrub the
+    # runner variable to keep the sandbox hermetic between CI and local runs.
+    unset GITHUB_REPOSITORY_OWNER GITHUB_REPOSITORY
     export PODMAN_LOG SKOPEO_LOG
 
     # Deterministic clock: the recipe builds the version string from `date`.
