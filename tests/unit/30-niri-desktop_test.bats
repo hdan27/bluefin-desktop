@@ -22,6 +22,7 @@ setup() {
 
     DNF5_LOG="${TEST_ROOT}/logs/dnf5.log"
     SYSTEMCTL_LOG="${TEST_ROOT}/logs/systemctl.log"
+    QS_LOG="${TEST_ROOT}/logs/qs.log"
 
     GREETD_CONF="${SANDBOX}/etc/greetd/config.toml"
     NIRI_CONF="${SANDBOX}/etc/xdg/niri/config.kdl"
@@ -42,7 +43,7 @@ setup() {
         "${BUILD_SRC}" >"${SCRIPT}"
 
     export PATH="${STUB_BIN}:${PATH}"
-    export DNF5_LOG SYSTEMCTL_LOG
+    export DNF5_LOG SYSTEMCTL_LOG QS_LOG
 
     for tool in dnf5 systemctl; do
         local log_var
@@ -54,6 +55,17 @@ exit 0
 EOF
         chmod +x "${STUB_BIN}/${tool}"
     done
+
+    # qs stub: records its arguments and the probe shell.qml contents. The
+    # pragma gate runs `qs -p <dir>`; individual tests can rewrite this stub
+    # to emit "Unrecognized pragma" and trip the gate.
+    {
+        echo '#!/usr/bin/bash'
+        echo 'printf "qs %s\n" "$*" >>"${QS_LOG}"'
+        echo 'cat "$2/shell.qml" >>"${QS_LOG}" 2>/dev/null || true'
+        echo 'exit 0'
+    } >"${STUB_BIN}/qs"
+    chmod +x "${STUB_BIN}/qs"
 }
 
 teardown() {
@@ -94,18 +106,22 @@ teardown() {
     mapfile -t calls <"${DNF5_LOG}"
     [ "${#calls[@]}" -eq 8 ]
 
-    # Fedora-native session packages (10-build.sh owns the rest).
-    [ "${calls[0]}" = "install -y niri xwayland-satellite quickshell xdg-desktop-portal-gnome xdg-desktop-portal-gtk matugen dgop cava qt6-qtmultimedia wl-clipboard cliphist i2c-tools accountsservice" ]
+    # Fedora-native session packages (10-build.sh owns the rest). quickshell
+    # is NOT here: Fedora's 0.2.x lacks the `//@ pragma` directives the DMS
+    # shells use, so it comes from the danklinux COPR below.
+    [ "${calls[0]}" = "install -y niri xwayland-satellite xdg-desktop-portal-gnome xdg-desktop-portal-gtk matugen dgop cava qt6-qtmultimedia wl-clipboard cliphist i2c-tools accountsservice" ]
+
+    # The danklinux set lands FIRST: quickshell 0.3.x must be in place before
+    # dms, or dnf satisfies dms's `(quickshell or quickshell-git)` dep from
+    # Fedora and the greeter crash-loops at boot.
+    [ "${calls[1]}" = "-y copr enable avengemedia/danklinux" ]
+    [ "${calls[2]}" = "-y copr disable avengemedia/danklinux" ]
+    [ "${calls[3]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:avengemedia:danklinux quickshell dms-greeter danksearch" ]
 
     # DMS from its COPR, enabled and disabled around an isolated install.
-    [ "${calls[1]}" = "-y copr enable avengemedia/dms" ]
-    [ "${calls[2]}" = "-y copr disable avengemedia/dms" ]
-    [ "${calls[3]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:avengemedia:dms dms" ]
-
-    # Greeter and search backend from the danklinux COPR, same isolation.
-    [ "${calls[4]}" = "-y copr enable avengemedia/danklinux" ]
-    [ "${calls[5]}" = "-y copr disable avengemedia/danklinux" ]
-    [ "${calls[6]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:avengemedia:danklinux dms-greeter danksearch" ]
+    [ "${calls[4]}" = "-y copr enable avengemedia/dms" ]
+    [ "${calls[5]}" = "-y copr disable avengemedia/dms" ]
+    [ "${calls[6]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:avengemedia:dms dms" ]
 
     # GNOME session stack removal.
     [ "${calls[7]}" = "remove -y gnome-shell gnome-session gnome-session-wayland-session gdm" ]
@@ -144,6 +160,32 @@ teardown() {
 
     [ -f "${NIRI_CONF}" ]
     [ "$(cat "${CONFIG_SRC}")" = "$(cat "${NIRI_CONF}")" ]
+}
+
+@test "30-niri: gate parses the DMS pragma probe with the installed qs" {
+    run bash "${SCRIPT}"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"quickshell pragma gate passed"* ]]
+
+    grep -q '^qs -p ' "${QS_LOG}"
+    grep -q '^//@ pragma AppId ' "${QS_LOG}"
+}
+
+@test "30-niri: build fails when quickshell cannot parse the pragma directives" {
+    # Regression guard for the greeter crash-loop: Fedora's quickshell 0.2.x
+    # answers the probe with "Unrecognized pragma" and the script must fail
+    # the build instead of shipping a greeter that dies at QML parse.
+    cat >"${STUB_BIN}/qs" <<'EOF'
+#!/usr/bin/bash
+echo 'ERROR: Unrecognized pragma "AppId com.danklinux.dms-greeter"'
+exit 1
+EOF
+    chmod +x "${STUB_BIN}/qs"
+
+    run bash "${SCRIPT}"
+    [ "$status" -ne 0 ]
+    [[ "$output" == *"installed quickshell cannot parse the DMS shells"* ]]
+    [[ "$output" == *"Unrecognized pragma"* ]]
 }
 
 @test "30-niri: fails fast when copr-helpers.sh is missing from the context" {

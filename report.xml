@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites time="4.556">
+<testsuite name="00-image-info_test.bats" tests="20" failures="6" errors="0" skipped="0" time="0.321" timestamp="2026-09-17T01:38:55" hostname="d00814adfa53">
+    <testcase classname="00-image-info_test.bats" name="00-image-info: sandbox rewrite left no writes to the host filesystem" time="0.013" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: writes image-info.json and exits cleanly" time="0.014" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: image-info.json is valid JSON with the documented fields" time="0.020">
+        <failure type="failure">(in test file tests/unit/00-image-info_test.bats, line 76)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="00-image-info_test.bats" name="00-image-info: image-ref is the signed ghcr ref bootc upgrades from" time="0.014">
+        <failure type="failure">(in test file tests/unit/00-image-info_test.bats, line 88)
+  `[ &quot;$(json_field image-ref)&quot; = &quot;ostree-image-signed:docker://ghcr.io/projectbluefin/finpilot&quot; ]&#39; failed
+/repo/tests/unit/00-image-info_test.bats: line 51: python3: command not found</failure>
+    </testcase>
+    <testcase classname="00-image-info_test.bats" name="00-image-info: image flavor is main for a non-nvidia image name" time="0.015">
+        <failure type="failure">(in test file tests/unit/00-image-info_test.bats, line 94)
+  `[ &quot;$(json_field image-flavor)&quot; = &quot;main&quot; ]&#39; failed
+/repo/tests/unit/00-image-info_test.bats: line 51: python3: command not found</failure>
+    </testcase>
+    <testcase classname="00-image-info_test.bats" name="00-image-info: image flavor is nvidia when the name contains nvidia" time="0.014">
+        <failure type="failure">(in test file tests/unit/00-image-info_test.bats, line 101)
+  `[ &quot;$(json_field image-flavor)&quot; = &quot;nvidia&quot; ]&#39; failed
+/repo/tests/unit/00-image-info_test.bats: line 51: python3: command not found</failure>
+    </testcase>
+    <testcase classname="00-image-info_test.bats" name="00-image-info: nvidia match is a substring match, not a suffix match" time="0.015">
+        <failure type="failure">(in test file tests/unit/00-image-info_test.bats, line 109)
+  `[ &quot;$(json_field image-flavor)&quot; = &quot;nvidia&quot; ]&#39; failed
+/repo/tests/unit/00-image-info_test.bats: line 51: python3: command not found</failure>
+    </testcase>
+    <testcase classname="00-image-info_test.bats" name="00-image-info: reports the derived identity on stdout" time="0.013" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: appends image identity to os-release" time="0.019" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: os-release URLs default to the vendor/name GitHub repo" time="0.018" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: branding env vars override the defaults" time="0.016" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: IMAGE_VERSION uses VERSION when it is set" time="0.015" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: IMAGE_VERSION falls back to the image tag when VERSION is unset" time="0.014" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: IMAGE_VERSION falls back to the image tag when VERSION is empty" time="0.014" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: os-release append is idempotent across two runs" time="0.024" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: pre-existing VARIANT_ID suppresses the os-release append" time="0.017" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: image-info.json is still written when os-release is absent" time="0.013" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: image-info.json is rewritten, not appended, on a second run" time="0.026">
+        <failure type="failure">(in test file tests/unit/00-image-info_test.bats, line 215)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="00-image-info_test.bats" name="00-image-info: fails fast when a required env var is missing" time="0.013" />
+    <testcase classname="00-image-info_test.bats" name="00-image-info: fails fast when the image tag is missing" time="0.014" />
+
+</testsuite>
+<testsuite name="10-build_test.bats" tests="17" failures="0" errors="0" skipped="0" time="0.692" timestamp="2026-09-17T01:38:56" hostname="d00814adfa53">
+    <testcase classname="10-build_test.bats" name="10-build: sandbox rewrite left no writes to the host filesystem" time="0.026" />
+    <testcase classname="10-build_test.bats" name="10-build: completes successfully against a populated sandbox context" time="0.039" />
+    <testcase classname="10-build_test.bats" name="10-build: emits GitHub Actions group markers" time="0.039" />
+    <testcase classname="10-build_test.bats" name="10-build: overlays the brew OCI payload onto the image root" time="0.039" />
+    <testcase classname="10-build_test.bats" name="10-build: copies every Brewfile into the ublue-os homebrew dir" time="0.040" />
+    <testcase classname="10-build_test.bats" name="10-build: consolidates only .just files into 60-custom.just" time="0.041" />
+    <testcase classname="10-build_test.bats" name="10-build: separates consolidated just recipes with blank lines" time="0.040" />
+    <testcase classname="10-build_test.bats" name="10-build: copies flatpak preinstall files into preinstall.d" time="0.040" />
+    <testcase classname="10-build_test.bats" name="10-build: installs the packages the default ujust recipes depend on" time="0.039" />
+    <testcase classname="10-build_test.bats" name="10-build: enables exactly the podman and brew units" time="0.039" />
+    <testcase classname="10-build_test.bats" name="10-build: sources copr-helpers.sh so copr_install_isolated is available" time="0.042" />
+    <testcase classname="10-build_test.bats" name="10-build: fails fast when copr-helpers.sh is missing from the context" time="0.030" />
+    <testcase classname="10-build_test.bats" name="10-build: the consolidated just file accumulates across repeated runs" time="0.069" />
+    <testcase classname="10-build_test.bats" name="10-build: an empty brew dir fails the build despite nullglob (regression guard)" time="0.035" />
+    <testcase classname="10-build_test.bats" name="10-build: an empty flatpaks dir fails the build despite nullglob (regression guard)" time="0.042" />
+    <testcase classname="10-build_test.bats" name="10-build: an empty ujust dir still produces a consolidated just file" time="0.045" />
+    <testcase classname="10-build_test.bats" name="10-build: restores default glob behaviour before finishing" time="0.047" />
+
+</testsuite>
+<testsuite name="30-niri-desktop_test.bats" tests="11" failures="0" errors="0" skipped="0" time="0.583" timestamp="2026-09-17T01:38:57" hostname="d00814adfa53">
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: sandbox rewrite left no writes to the host filesystem" time="0.025" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: completes successfully" time="0.055" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: emits GitHub Actions group markers" time="0.071" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: installs the session stack, COPR packages, and removes GNOME in order" time="0.072" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: enables greetd as the only display manager" time="0.071" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: configures greetd to run dms-greeter under niri" time="0.074" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: binds dms.service to the niri user session" time="0.058" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: installs the default niri config verbatim" time="0.043" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: gate parses the DMS pragma probe with the installed qs" time="0.040" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: build fails when quickshell cannot parse the pragma directives" time="0.049" />
+    <testcase classname="30-niri-desktop_test.bats" name="30-niri: fails fast when copr-helpers.sh is missing from the context" time="0.025" />
+
+</testsuite>
+<testsuite name="check-token-health_test.bats" tests="24" failures="0" errors="0" skipped="2" time="0.469" timestamp="2026-09-17T01:38:57" hostname="d00814adfa53">
+    <testcase classname="check-token-health_test.bats" name="fails when GH_TOKEN is unset" time="0.013" />
+    <testcase classname="check-token-health_test.bats" name="fails when TOKEN_NAME is unset" time="0.012" />
+    <testcase classname="check-token-health_test.bats" name="REQUIRED_SCOPES and MIN_REMAINING are optional" time="0.021" />
+    <testcase classname="check-token-health_test.bats" name="healthy token exits 0 and reports the status" time="0.020" />
+    <testcase classname="check-token-health_test.bats" name="401 fails closed with an error annotation and valid=false" time="0.016" />
+    <testcase classname="check-token-health_test.bats" name="403 fails closed" time="0.015" />
+    <testcase classname="check-token-health_test.bats" name="a curl transport failure fails closed rather than passing" time="0.016" />
+    <testcase classname="check-token-health_test.bats" name="the token is presented to the /user endpoint with the JSON accept header" time="0.023" />
+    <testcase classname="check-token-health_test.bats" name="rate limit headers are parsed and reported" time="0.021" />
+    <testcase classname="check-token-health_test.bats" name="header matching is case-insensitive" time="0.020" />
+    <testcase classname="check-token-health_test.bats" name="missing rate limit headers report unknown and still pass" time="0">
+        <skipped>known defect #339: RATE_REMAINING=$(grep ...) aborts under set -e when the header is absent</skipped>
+    </testcase>
+    <testcase classname="check-token-health_test.bats" name="remaining below MIN_REMAINING warns but does not fail" time="0.022" />
+    <testcase classname="check-token-health_test.bats" name="remaining equal to MIN_REMAINING does not warn" time="0.022" />
+    <testcase classname="check-token-health_test.bats" name="MIN_REMAINING is honoured when overridden" time="0.023" />
+    <testcase classname="check-token-health_test.bats" name="required scopes present passes" time="0.028" />
+    <testcase classname="check-token-health_test.bats" name="a missing required scope fails closed with valid=false" time="0.029" />
+    <testcase classname="check-token-health_test.bats" name="whitespace around required scopes is trimmed" time="0.028" />
+    <testcase classname="check-token-health_test.bats" name="empty REQUIRED_SCOPES accepts any valid token without scope checking" time="0.024" />
+    <testcase classname="check-token-health_test.bats" name="fine-grained token without a scopes header skips the scope check" time="0">
+        <skipped>known defect #339: SCOPES=$(grep ...) aborts under set -e, so the documented fine-grained/App-token branch is unreachable</skipped>
+    </testcase>
+    <testcase classname="check-token-health_test.bats" name="all three outputs are written on success" time="0.025" />
+    <testcase classname="check-token-health_test.bats" name="outputs append rather than truncate GITHUB_OUTPUT" time="0.025" />
+    <testcase classname="check-token-health_test.bats" name="the headers file is written under RUNNER_TEMP and removed on success" time="0.025" />
+    <testcase classname="check-token-health_test.bats" name="the headers file is removed on the failure path too" time="0.018" />
+    <testcase classname="check-token-health_test.bats" name="RUNNER_TEMP defaults to /tmp when unset" time="0.023" />
+
+</testsuite>
+<testsuite name="clean-stage_test.bats" tests="14" failures="0" errors="0" skipped="0" time="0.684" timestamp="2026-09-17T01:38:58" hostname="d00814adfa53">
+    <testcase classname="clean-stage_test.bats" name="clean-stage: completes successfully against a sandbox root" time="0.042" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: emits GitHub Actions group markers" time="0.043" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: restores dnf5 upstream defaults and clears versionlock" time="0.042" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: disables and masks the fedora flatpak repo service" time="0.043" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: removes the flatpak-add-fedora-repos unit file" time="0.043" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: removes the root .gitkeep placeholder" time="0.047" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: removes /var subdirectories other than cache" time="0.048" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: keeps libdnf5 and rpm-ostree cache dirs, drops the rest" time="0.048" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: empties tmp and boot but keeps the directories" time="0.049" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: creates tmp and boot when they are absent" time="0.046" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: clears /run contents while keeping /run itself" time="0.050" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: skips mounted entries under tmp, boot and run" time="0.061" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: tolerates empty var cache directories" time="0.052" />
+    <testcase classname="clean-stage_test.bats" name="clean-stage: is idempotent across repeated runs" time="0.070" />
+
+</testsuite>
+<testsuite name="copr-helpers_test.bats" tests="9" failures="0" errors="0" skipped="0" time="0.108" timestamp="2026-09-17T01:38:59" hostname="d00814adfa53">
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: enables, disables, then installs from the repo id" time="0.013" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: disable runs before install so the repo stays off by default" time="0.014" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: installs multiple packages in a single dnf5 transaction" time="0.012" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: translates every slash in the copr name into the repo id" time="0.013" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: fails when no packages are supplied" time="0.010" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: does not enable the repo when no packages are supplied" time="0.010" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: propagates dnf5 install failure" time="0.013" />
+    <testcase classname="copr-helpers_test.bats" name="copr_install_isolated: propagates dnf5 copr enable failure without installing" time="0.012" />
+    <testcase classname="copr-helpers_test.bats" name="copr-helpers.sh: sourcing the library performs no dnf5 calls" time="0.011" />
+
+</testsuite>
+<testsuite name="custom-apps-just_test.bats" tests="14" failures="4" errors="0" skipped="0" time="0.431" timestamp="2026-09-17T01:38:59" hostname="d00814adfa53">
+    <testcase classname="custom-apps-just_test.bats" name="install-default-apps bundles only the default Brewfile" time="0.029" />
+    <testcase classname="custom-apps-just_test.bats" name="install-dev-tools bundles only the development Brewfile" time="0.029" />
+    <testcase classname="custom-apps-just_test.bats" name="install-fonts bundles only the fonts Brewfile" time="0.029" />
+    <testcase classname="custom-apps-just_test.bats" name="install-all-brew bundles default, development and fonts in order" time="0.037" />
+    <testcase classname="custom-apps-just_test.bats" name="install-all-brew reports a failing bundle as a nonzero exit" time="0.029" />
+    <testcase classname="custom-apps-just_test.bats" name="every Brewfile referenced by a recipe exists in custom/brew" time="0.025" />
+    <testcase classname="custom-apps-just_test.bats" name="install-flatpak adds the Flathub remote before installing" time="0.032" />
+    <testcase classname="custom-apps-just_test.bats" name="install-flatpak passes the app id through unmodified" time="0.028" />
+    <testcase classname="custom-apps-just_test.bats" name="install-jetbrains-toolbox verifies the checksum before extracting" time="0.034">
+        <failure type="failure">(in test file tests/unit/custom-apps-just_test.bats, line 209)
+  `[ &quot;${status}&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="custom-apps-just_test.bats" name="install-jetbrains-toolbox installs into HOME and launches the binary" time="0.037">
+        <failure type="failure">(in test file tests/unit/custom-apps-just_test.bats, line 220)
+  `[ &quot;${status}&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="custom-apps-just_test.bats" name="install-jetbrains-toolbox aborts before extracting when the checksum fails" time="0.039">
+        <failure type="failure">(in test file tests/unit/custom-apps-just_test.bats, line 231)
+  `grep -qF &quot;sha256sum -c&quot; &quot;${COMMAND_LOG}&quot;&#39; failed</failure>
+    </testcase>
+    <testcase classname="custom-apps-just_test.bats" name="install-jetbrains-toolbox resolves the build version from the releases feed" time="0.038">
+        <failure type="failure">(in test file tests/unit/custom-apps-just_test.bats, line 239)
+  `[ &quot;${status}&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="custom-apps-just_test.bats" name="delegating recipes call ujust with the documented targets" time="0.025" />
+    <testcase classname="custom-apps-just_test.bats" name="every custom-apps recipe declares a just group" time="0.020" />
+
+</testsuite>
+<testsuite name="custom-system-just_test.bats" tests="17" failures="0" errors="0" skipped="0" time="0.652" timestamp="2026-09-17T01:39:00" hostname="d00814adfa53">
+    <testcase classname="custom-system-just_test.bats" name="benchmark runs stress-ng directly when it is already installed" time="0.039" />
+    <testcase classname="custom-system-just_test.bats" name="benchmark offers a Homebrew install when stress-ng is missing" time="0.043" />
+    <testcase classname="custom-system-just_test.bats" name="benchmark declining the install exits cleanly without running stress-ng" time="0.038" />
+    <testcase classname="custom-system-just_test.bats" name="benchmark fails when neither stress-ng nor brew is available" time="0.036" />
+    <testcase classname="custom-system-just_test.bats" name="configure-dev-groups adds the user to docker and libvirt" time="0.040" />
+    <testcase classname="custom-system-just_test.bats" name="configure-dev-groups seeds missing groups from the system group file" time="0.046" />
+    <testcase classname="custom-system-just_test.bats" name="configure-dev-groups does not duplicate groups that already exist" time="0.046" />
+    <testcase classname="custom-system-just_test.bats" name="configure-dev-groups runs under pkexec, not plain bash" time="0.035" />
+    <testcase classname="custom-system-just_test.bats" name="toggle-example-feature Enable branch reports enabling" time="0.038" />
+    <testcase classname="custom-system-just_test.bats" name="toggle-example-feature Disable branch reports disabling" time="0.039" />
+    <testcase classname="custom-system-just_test.bats" name="toggle-example-feature Cancel branch changes nothing" time="0.035" />
+    <testcase classname="custom-system-just_test.bats" name="toggle-example-feature offers exactly Enable, Disable and Cancel" time="0.035" />
+    <testcase classname="custom-system-just_test.bats" name="clean-containers prunes images before volumes" time="0.039" />
+    <testcase classname="custom-system-just_test.bats" name="update-and-reboot upgrades then reboots when confirmed" time="0.041" />
+    <testcase classname="custom-system-just_test.bats" name="update-and-reboot upgrades but skips the reboot when declined" time="0.038" />
+    <testcase classname="custom-system-just_test.bats" name="update-and-reboot escalates the upgrade with sudo" time="0.036" />
+    <testcase classname="custom-system-just_test.bats" name="every custom-system recipe declares a just group" time="0.028" />
+
+</testsuite>
+<testsuite name="justfile-build_test.bats" tests="27" failures="0" errors="0" skipped="27" time="0" timestamp="2026-09-17T01:39:00" hostname="d00814adfa53">
+    <testcase classname="justfile-build_test.bats" name="build: derives a bare &lt;fedora&gt;.&lt;date&gt; version for the stable tag" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: prefixes the version with the tag for non-stable tags" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: treats any tag containing &#39;stable&#39; as a stable build" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: reads the Fedora major version from the Containerfile" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: accepts an unquoted FEDORA_MAJOR_VERSION ARG" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: aborts when the Containerfile has no FEDORA_MAJOR_VERSION ARG" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: appends a point release when the version tag already exists" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: walks past existing point releases to the first free one" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: leaves the version untouched when the registry lookup fails" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: stamps SHA_HEAD_SHORT only when the worktree is clean" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: omits SHA_HEAD_SHORT when the worktree is dirty" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: passes the image identity build args bootc relies on" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: honours IMAGE_VENDOR and UBLUE_IMAGE_TAG overrides" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: IMAGE_NAME build arg follows the positional target_image" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: forwards GITHUB_TOKEN as a build secret when set" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: does not add a build secret when GITHUB_TOKEN is unset" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: applies the OCI and ArtifactHub labels" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: reads the layer cache but never writes it by default" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: writes the layer cache when REGISTRY_CACHE_WRITE=1" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: skips cache args entirely when the cache ref is unreachable" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="build: pulls a newer base and tags the result target_image:tag" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="tag-images: rejects an empty image name" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="tag-images: rejects an empty default tag" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="tag-images: rejects an empty tag list" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="tag-images: untags the default tag before re-tagging by image id" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="tag-images: re-applies the default tag so local lookups still resolve" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+    <testcase classname="justfile-build_test.bats" name="tag-images: aborts when the image cannot be inspected" time="0">
+        <skipped>just is not installed</skipped>
+    </testcase>
+
+</testsuite>
+<testsuite name="justfile-tag-images_test.bats" tests="16" failures="14" errors="0" skipped="0" time="0.333" timestamp="2026-09-17T01:39:01" hostname="d00814adfa53">
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: rejects a missing image name" time="0.019">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 52)
+  `[ &quot;$status&quot; -eq 1 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: rejects a missing default tag" time="0.018">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 59)
+  `[ &quot;$status&quot; -eq 1 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: rejects an empty tag list" time="0.018">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 66)
+  `[ &quot;$status&quot; -eq 1 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: rejects invocation with no arguments at all" time="0.020">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 73)
+  `[ &quot;$status&quot; -eq 1 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: resolves the image id from the localhost-qualified default tag" time="0.021">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 80)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: untags the localhost default reference before re-tagging" time="0.020">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 86)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: applies every tag in the whitespace-separated list" time="0.019">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 99)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: re-applies the default tag so local lookups keep working" time="0.019">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 107)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: alias tags are unqualified (no localhost/ prefix)" time="0.019">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 118)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: a single tag produces exactly two tag calls (alias + default)" time="0.021">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 125)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: collapses repeated whitespace in the tag list" time="0.020">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 131)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: reports the tags it applied" time="0.020">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 139)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: honours a PODMAN override from the environment" time="0.022">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 155)
+  `[ &quot;$status&quot; -eq 0 ]&#39; failed</failure>
+    </testcase>
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: fails when the image cannot be inspected" time="0.028" />
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: fails when untagging the default reference fails" time="0.026" />
+    <testcase classname="justfile-tag-images_test.bats" name="tag-images: fails when applying an alias tag fails" time="0.023">
+        <failure type="failure">(in test file tests/unit/justfile-tag-images_test.bats, line 224)
+  `[ &quot;$(grep -c &#39;^tag &#39; &quot;${PODMAN_LOG}&quot;)&quot; -eq 1 ]&#39; failed</failure>
+    </testcase>
+
+</testsuite>
+<testsuite name="precommit-brewfile-hook_test.bats" tests="7" failures="0" errors="0" skipped="0" time="0.041" timestamp="2026-09-17T01:39:01" hostname="d00814adfa53">
+    <testcase classname="precommit-brewfile-hook_test.bats" name="pre-commit config exists and declares a validate-brewfiles hook" time="0.006" />
+    <testcase classname="precommit-brewfile-hook_test.bats" name="validate-brewfiles hook delegates to build/validate-brewfiles.sh" time="0.005" />
+    <testcase classname="precommit-brewfile-hook_test.bats" name="the delegated script is present" time="0.003" />
+    <testcase classname="precommit-brewfile-hook_test.bats" name="the hook invokes the script the same way the Justfile does" time="0.009" />
+    <testcase classname="precommit-brewfile-hook_test.bats" name="no pre-commit hook feeds a repository Brewfile to brew bundle" time="0.006" />
+    <testcase classname="precommit-brewfile-hook_test.bats" name="no pre-commit hook globs custom/brew Brewfiles into a shell loop" time="0.007" />
+    <testcase classname="precommit-brewfile-hook_test.bats" name="the hook still skips cleanly when Homebrew is absent" time="0.005" />
+
+</testsuite>
+<testsuite name="shellcheck-scope_test.bats" tests="7" failures="0" errors="0" skipped="0" time="0.058" timestamp="2026-09-17T01:39:01" hostname="d00814adfa53">
+    <testcase classname="shellcheck-scope_test.bats" name=".shellcheck-scope exists and declares at least one pattern" time="0.006" />
+    <testcase classname="shellcheck-scope_test.bats" name="no declared pattern contains whitespace" time="0.006" />
+    <testcase classname="shellcheck-scope_test.bats" name="every declared pattern matches at least one file" time="0.012" />
+    <testcase classname="shellcheck-scope_test.bats" name="every tracked *.sh file is covered by the declared scope" time="0.013" />
+    <testcase classname="shellcheck-scope_test.bats" name="the credential-handling composite-action script is in scope" time="0.007" />
+    <testcase classname="shellcheck-scope_test.bats" name="the CI shellcheck-glob is still the known-narrow value (documents the open gap)" time="0.006" />
+    <testcase classname="shellcheck-scope_test.bats" name="Justfile:lint reads the manifest instead of walking the tree" time="0.008" />
+
+</testsuite>
+<testsuite name="validate-brewfiles_test.bats" tests="8" failures="0" errors="0" skipped="0" time="0.184" timestamp="2026-09-17T01:39:02" hostname="d00814adfa53">
+    <testcase classname="validate-brewfiles_test.bats" name="validator checks formulas and casks with source lines" time="0.022" />
+    <testcase classname="validate-brewfiles_test.bats" name="validator syncs deduplicated taps before any package checks" time="0.030" />
+    <testcase classname="validate-brewfiles_test.bats" name="computed tap lines fail closed without reaching brew bundle" time="0.024" />
+    <testcase classname="validate-brewfiles_test.bats" name="tap failure is fatal and preserves both output streams" time="0.025" />
+    <testcase classname="validate-brewfiles_test.bats" name="info failure reports file line command exit code and original error" time="0.020" />
+    <testcase classname="validate-brewfiles_test.bats" name="malformed brew declarations are rejected, failures accumulate across files" time="0.024" />
+    <testcase classname="validate-brewfiles_test.bats" name="missing directory and empty directory exit 2" time="0.019" />
+    <testcase classname="validate-brewfiles_test.bats" name="validator checks final declaration without trailing newline" time="0.020" />
+
+</testsuite>
+</testsuites>

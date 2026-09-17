@@ -31,9 +31,9 @@ source /ctx/build/copr-helpers.sh
 
 echo "::group:: Install niri and session support packages"
 
-# niri session stack, all from Fedora repositories:
+# niri session stack, all from Fedora repositories except quickshell (see
+# the danklinux COPR install below):
 #   niri / xwayland-satellite   compositor + X11 compatibility
-#   quickshell                  QML framework DMS and dms-greeter run on
 #   xdg-desktop-portal-gnome    ScreenCast portal backend used by niri
 #   xdg-desktop-portal-gtk      file chooser and other portal frontends
 #   matugen, dgop, cava         DMS companions: theming, metrics, visualizer
@@ -41,10 +41,16 @@ echo "::group:: Install niri and session support packages"
 #   wl-clipboard, cliphist      DMS clipboard history
 #   i2c-tools                   DDC monitor backlight control for DMS
 #   accountsservice             user list/faces for DMS and the greeter
+#
+# NOT here: quickshell. Fedora's quickshell (0.2.x) is too old for the DMS
+# shells — dms and dms-greeter QML open with `//@ pragma AppId <id>` comment
+# directives, supported from quickshell 0.3.0. With Fedora's build the greeter
+# UI dies at QML parse ("Unrecognized pragma"), niri quits, greetd hits its
+# start limit and the boot ends on niri's frozen startup spinner. See the
+# quickshell note in the COPR block below for the ordering constraint.
 dnf5 install -y \
     niri \
     xwayland-satellite \
-    quickshell \
     xdg-desktop-portal-gnome \
     xdg-desktop-portal-gtk \
     matugen \
@@ -61,13 +67,24 @@ echo "::endgroup::"
 
 echo "::group:: Install DankMaterialShell from COPR"
 
+# Order matters: quickshell MUST land before dms. Both dms and dms-greeter
+# only carry a rich `(quickshell or quickshell-git)` dependency, so if
+# quickshell is not yet installed when dms resolves, dnf satisfies it from
+# Fedora (avengemedia/dms ships no quickshell of its own) — Fedora's 0.2.x
+# then silently wins and the greeter crash-loops at boot. Installing the
+# danklinux set first puts the COPR's 0.3.x quickshell in place so the later
+# dms transaction finds the dependency already satisfied.
+
+# quickshell:  QML framework for dms and dms-greeter. Must come from this
+#              COPR (0.3.x build with the `//@ pragma` directives the DMS
+#              shells use), not from Fedora — see the notes above and below.
+# dms-greeter: greetd login screen in the DMS style (runs as the "greeter"
+#              user created by the package's sysusers drop-in).
+# danksearch:  DMS filesystem search backend (called "dsearch" on Arch).
+copr_install_isolated "avengemedia/danklinux" quickshell dms-greeter danksearch
+
 # dms: DankMaterialShell (shell + `dms` CLI, ships dms.service user unit)
 copr_install_isolated "avengemedia/dms" dms
-
-# dms-greeter: greetd login screen in the DMS style (runs as the "greeter"
-#              user created by the package's sysusers drop-in)
-# danksearch:  DMS filesystem search backend (called "dsearch" on Arch)
-copr_install_isolated "avengemedia/danklinux" dms-greeter danksearch
 
 echo "::endgroup::"
 
@@ -128,6 +145,30 @@ echo "::group:: Install the default niri configuration"
 # environment documented by the DMS compositor guide.
 install -Dm644 /ctx/build/config/niri/config.kdl /etc/xdg/niri/config.kdl
 
+echo "::endgroup::"
+
+echo "::group:: Verify quickshell parses the DMS pragma directives"
+
+# Gate on the exact failure that breaks the greeter: the dms and dms-greeter
+# shells open with `//@ pragma AppId <id>` comment directives, which only
+# quickshell >= 0.3 parses. If Fedora's quickshell won the resolution race
+# anywhere above, the greeter dies at QML parse under greetd, niri quits and
+# the boot ends on a frozen spinner — so fail the BUILD here instead.
+probe_dir="$(mktemp -d)"
+cat >"${probe_dir}/shell.qml" <<'PROBE'
+//@ pragma AppId org.bluefin-desktop.build-probe
+import Quickshell
+ShellRoot {}
+PROBE
+qs_log="$(XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-${probe_dir}}" qs -p "${probe_dir}" 2>&1 || true)"
+rm -rf "${probe_dir}"
+if grep -q 'Unrecognized pragma' <<<"${qs_log}"; then
+    echo "ERROR: installed quickshell cannot parse the DMS shells:"
+    echo "${qs_log}"
+    rpm -q quickshell
+    exit 1
+fi
+echo "quickshell pragma gate passed"
 echo "::endgroup::"
 
 echo "niri + DMS desktop installed!"
