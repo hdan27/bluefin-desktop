@@ -99,7 +99,9 @@ jobs:
         with:
           storage-backend: btrfs
           native-overlay: "true"
-          update-podman: "true"
+          # ubuntu-26.04 (resolute) already ships podman/buildah/crun/skopeo 5.x;
+          # the resolute apt-source path hard-fails on anything but ubuntu-24.04.
+          update-podman: "false"
           install-tools: '["just"]'
 
       - name: Restore DNF cache

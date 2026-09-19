@@ -71,6 +71,17 @@ uses: projectbluefin/actions/bootc-build/setup-runner@<sha> # v1
 
 The SHA comment (`# v1`) is for human readability only — Renovate ignores it.
 
+## Runner Image and update-podman
+
+`setup-runner`'s `update-podman: "true"` path adds the Ubuntu *resolute*
+apt source and hard-fails on any runner that is not exactly `ubuntu-24.04`
+(`test "${IDV}" = "ubuntu-24.04"`). When Renovate bumps `runs-on` to a newer
+Ubuntu (e.g. `ubuntu-26.04`), set `update-podman: "false"` in the same
+change — newer runners ship podman 5.x natively and the `native-overlay`
+step still enforces the podman >= 5 floor. Validate with
+`actionlint .github/workflows/build-image.yml` (a `-ignore` for an unknown
+new label is fine; actionlint's label database lags GitHub).
+
 ## Reusable Workflow Permissions
 
 A caller's `permissions:` block is a **ceiling** for every nested job in a reusable
