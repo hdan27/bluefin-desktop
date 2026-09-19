@@ -50,7 +50,7 @@ concurrency:
 jobs:
   build:
     name: Build and push image
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 360
     permissions:
       contents: read
@@ -95,11 +95,13 @@ jobs:
           image-name: ${{ env.IMAGE_NAME }}
 
       - name: Setup runner
-        uses: projectbluefin/actions/bootc-build/setup-runner@e2ccd51b41d9bb3abd9caeac626fb15c95589c3c # v1
+        uses: projectbluefin/actions/bootc-build/setup-runner@8895d09342174927b950abc75dccd6da2c8ba36f # v1
         with:
           storage-backend: btrfs
           native-overlay: "true"
-          update-podman: "true"
+          # ubuntu-26.04 (resolute) already ships podman/buildah/crun/skopeo 5.x;
+          # the resolute apt-source path hard-fails on anything but ubuntu-24.04.
+          update-podman: "false"
           install-tools: '["just"]'
 
       - name: Restore DNF cache
