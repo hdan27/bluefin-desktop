@@ -131,7 +131,7 @@ teardown() {
   # ghostty from its COPR, enabled and disabled around an isolated install.
   [ "${calls[10]}" = "-y copr enable scottames/ghostty" ]
   [ "${calls[11]}" = "-y copr disable scottames/ghostty" ]
-  [ "${calls[12]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:scottames:ghostty  ghostty" ]
+  [ "${calls[12]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:scottames:ghostty ghostty" ]
 
   # GNOME session stack removal.
   [ "${calls[13]}" = "remove -y gnome-shell gnome-session gnome-session-wayland-session gdm" ]
