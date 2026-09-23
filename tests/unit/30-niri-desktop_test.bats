@@ -123,8 +123,18 @@ teardown() {
     [ "${calls[5]}" = "-y copr disable avengemedia/dms" ]
     [ "${calls[6]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:avengemedia:dms dms" ]
 
+    # wezterm from its COPR, enabled and disabled around an isolated install.
+    [ "${calls[7]}" = "-y copr enable wezfurlong/wezterm-nightly" ]
+    [ "${calls[8]}" = "-y copr disable wezfurlong/wezterm-nightly" ]
+    [ "${calls[9]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:wezfurlong:wezterm-nightly wezterm" ]
+
+    # ghostty from its COPR, enabled and disabled around an isolated install.
+    [ "${calls[10]}" = "-y copr enable scottames/ghostty" ]
+    [ "${calls[11]}" = "-y copr disable scottames/ghostty" ]
+    [ "${calls[12]}" = "-y install --enablerepo=copr:copr.fedorainfracloud.org:scottames:ghostty"  ghostty" ]
+
     # GNOME session stack removal.
-    [ "${calls[7]}" = "remove -y gnome-shell gnome-session gnome-session-wayland-session gdm" ]
+    [ "${calls[13]}" = "remove -y gnome-shell gnome-session gnome-session-wayland-session gdm" ]
 }
 
 @test "30-niri: enables greetd as the only display manager" {

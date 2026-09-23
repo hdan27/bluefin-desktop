@@ -88,6 +88,8 @@ copr_install_isolated "avengemedia/dms" dms
 
 copr_install_isolated "wezfurlong/wezterm-nightly" wezterm
 
+copr_install_isolated "scottames/ghostty" ghostty
+
 echo "::endgroup::"
 
 echo "::group:: Remove the GNOME session"
