@@ -1,0 +1,18 @@
+[Unit]
+Description=Install Flatpaks staged in /usr/share/flatpak/preinstall.d
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/usr/bin/flatpak
+Documentation=file:/usr/share/flatpak/preinstall.d
+StartLimitIntervalSec=600
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/flatpak-preinstall
+RemainAfterExit=true
+Restart=on-failure
+RestartSec=30
+StartLimitBurst=3
+
+[Install]
+WantedBy=multi-user.target

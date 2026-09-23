@@ -76,7 +76,7 @@ description: >-
 
 | Symptom                                 | Cause                                                       | Solution                                                                                                                        |
 | --------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Flatpaks not installed                  | Expected behavior — they install post-first-boot            | Ensure internet connection on first boot, or run `ujust install-default-apps`                                                   |
+| Flatpaks not installed                  | Network down on boot, or `flatpak-preinstall.service` failed     | Check `systemctl status flatpak-preinstall.service` (retries on failure); ensure internet connection, or run `ujust install-default-apps` |
 | Brew missing or not found               | Homebrew not extracted yet or service failed | Run `systemctl status brew-setup.service`. Homebrew is extracted on first boot via systemd service, not user-installed. Check `/var/home/linuxbrew/.linuxbrew/bin/brew` |
 | `bootc switch` fails                    | Wrong image URL or missing registry credentials             | Verify bootc switch URL matches your repo (see `iso/iso.toml`), check registry access                                           |
 | `bootc switch` fails: "image not found" | Image not yet published to GHCR                             | Trigger a build on `main`, verify image appears under Packages                                                                  |
@@ -106,8 +106,8 @@ description: >-
 
 | Symptom                                | Cause                                                           | Solution                                                                             |
 | -------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `ujust` not found                      | `ujust` not in PATH, or shell not reloaded                      | Open a new terminal, or source shell profile (`source ~/.bashrc`)                    |
-| `ujust --list` missing custom commands | `.just` files not copied during build                           | Verify `custom/ujust/*.just` files exist and are copied in `build/10-build.sh`       |
+| `ujust` not found                      | Build never delivered it: the vanilla Silverblue base ships no ujust                            | Verify the common-OCI rsync block in `build/10-build.sh` ran and `just` is in the `dnf5 install` line |
+| `ujust --list` missing custom commands | `.just` files not consolidated during build                                                    | Verify `custom/ujust/*.just` files exist and land in `/usr/share/ublue-os/just/60-custom.just` |
 | `ujust my-command` fails               | Script error in `.just` file                                    | Run `just --list` to check syntax, or run the script block manually for error output |
 | `ujust install-default-apps` fails     | Brew not installed or Brewfile path wrong                       | Verify brew is installed, check `BREWFILE` path in the just command                  |
 | ujust on ISO vs installed system       | ujust commands may differ between live ISO and installed system | Ensure commands are designed for the target environment (ISO vs installed)           |
