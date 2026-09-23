@@ -35,6 +35,8 @@ setup() {
     # this suite too.
     mkdir -p "${CTX}/build"
     cp "${REPO_ROOT}/build/copr-helpers.sh" "${CTX}/build/copr-helpers.sh"
+    mkdir -p "${CTX}/build/config/flatpak-preinstall"
+    cp "${REPO_ROOT}/build/config/flatpak-preinstall/"* "${CTX}/build/config/flatpak-preinstall/"
 
     # Representative build context contents.
     printf 'brew "tmux"\n' >"${CTX}/custom/brew/default.Brewfile"
@@ -47,6 +49,8 @@ setup() {
     sed \
         -e "s#/ctx/#${CTX}/#g" \
         -e "s#/usr/share/#${SANDBOX}/usr/share/#g" \
+        -e "s#/usr/lib/#${SANDBOX}/usr/lib/#g" \
+        -e "s#/usr/libexec/#${SANDBOX}/usr/libexec/#g" \
         "${BUILD_SRC}" >"${SCRIPT}"
 
     export PATH="${STUB_BIN}:${PATH}"
@@ -71,7 +75,7 @@ teardown() {
 @test "10-build: sandbox rewrite left no writes to the host filesystem" {
     # Guards the rewrite above: if the script's paths change, the sed no longer
     # matches and every other test in this file would silently touch the host.
-    run grep -nE '(^|[^-[:alnum:]])/ctx/|[^-[:alnum:]]/usr/share/' "${SCRIPT}"
+    run grep -nE '(^|[^-[:alnum:]])/ctx/|[^-[:alnum:]]/usr/(share|lib|libexec)/' "${SCRIPT}"
     [ "$status" -ne 0 ]
 
     grep -q "source ${CTX}/build/copr-helpers.sh" "${SCRIPT}"
@@ -98,8 +102,23 @@ teardown() {
     [ "$status" -eq 0 ]
 
     mapfile -t calls <"${RSYNC_LOG}"
-    [ "${#calls[@]}" -eq 1 ]
+    [ "${#calls[@]}" -eq 6 ]
     [ "${calls[0]}" = "-rvK ${CTX}/oci/brew/ /" ]
+}
+
+@test "10-build: installs the ujust payload from the common OCI shared layer" {
+    run bash "${SCRIPT}"
+    [ "$status" -eq 0 ]
+
+    mapfile -t calls <"${RSYNC_LOG}"
+    # The sandbox rewrite maps every /usr/share/ literal onto the sandbox root,
+    # including the one inside the oci/common source path — hence the stitched
+    # "${CTX}/oci/common/shared${SANDBOX}/usr/share/..." sources below.
+    [ "${calls[1]}" = "-rvK ${CTX}/oci/common/shared/usr/bin/ujust /usr/bin/" ]
+    [ "${calls[2]}" = "-rvK ${CTX}/oci/common/shared${SANDBOX}/usr/share/ublue-os/ ${SANDBOX}/usr/share/ublue-os/" ]
+    [ "${calls[3]}" = "-rvK ${CTX}/oci/common/shared${SANDBOX}/usr/share/bash-completion/ ${SANDBOX}/usr/share/bash-completion/" ]
+    [ "${calls[4]}" = "-rvK ${CTX}/oci/common/shared${SANDBOX}/usr/share/fish/ ${SANDBOX}/usr/share/fish/" ]
+    [ "${calls[5]}" = "-rvK ${CTX}/oci/common/shared${SANDBOX}/usr/share/zsh/ ${SANDBOX}/usr/share/zsh/" ]
 }
 
 @test "10-build: copies every Brewfile into the ublue-os homebrew dir" {
@@ -139,25 +158,38 @@ teardown() {
     grep -q 'org.mozilla.firefox' "${PREINSTALL_DIR}/default.preinstall"
 }
 
+@test "10-build: installs the flatpak preinstall runner and its unit" {
+    run bash "${SCRIPT}"
+    [ "$status" -eq 0 ]
+
+    [ -x "${SANDBOX}/usr/libexec/flatpak-preinstall" ]
+    [ -f "${SANDBOX}/usr/lib/systemd/system/flatpak-preinstall.service" ]
+    # The unit must execute the installed runner, not the build-context copy.
+    grep -q "^ExecStart=/usr/libexec/flatpak-preinstall$" \
+        "${SANDBOX}/usr/lib/systemd/system/flatpak-preinstall.service"
+}
+
 @test "10-build: installs the packages the default ujust recipes depend on" {
     run bash "${SCRIPT}"
     [ "$status" -eq 0 ]
 
     mapfile -t calls <"${DNF5_LOG}"
     [ "${#calls[@]}" -eq 1 ]
-    [ "${calls[0]}" = "install -y tmux gum mc gcc gcc-c++ glibc-devel make pkgconf-pkg-config openssl-devel" ]
+    [ "${calls[0]}" = "install -y tmux gum mc gcc gcc-c++ glibc-devel make pkgconf-pkg-config openssl-devel pcsc-lite pcsc-lite-libs pcsc-lite-devel fuse-libs just fzf" ]
 }
 
-@test "10-build: enables exactly the podman and brew units" {
+@test "10-build: enables exactly the podman, brew, pcscd and flatpak-preinstall units" {
     run bash "${SCRIPT}"
     [ "$status" -eq 0 ]
 
     mapfile -t calls <"${SYSTEMCTL_LOG}"
-    [ "${#calls[@]}" -eq 4 ]
+    [ "${#calls[@]}" -eq 6 ]
     [ "${calls[0]}" = "enable podman.socket" ]
     [ "${calls[1]}" = "enable brew-setup.service" ]
     [ "${calls[2]}" = "enable brew-update.timer" ]
     [ "${calls[3]}" = "enable brew-upgrade.timer" ]
+    [ "${calls[4]}" = "enable pcscd.socket pcscd.service" ]
+    [ "${calls[5]}" = "enable flatpak-preinstall.service" ]
 }
 
 @test "10-build: sources copr-helpers.sh so copr_install_isolated is available" {

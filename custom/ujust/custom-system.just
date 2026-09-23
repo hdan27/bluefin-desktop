@@ -9,7 +9,7 @@
 [group('System')]
 benchmark:
     #!/usr/bin/env bash
-    source /usr/lib/ujust/ujust.sh
+
     if ! type -P "stress-ng" &>/dev/null ; then
         echo "stress-ng is not installed."
         if command -v brew &>/dev/null; then
@@ -51,10 +51,10 @@ configure-dev-groups:
 [group('System')]
 toggle-example-feature:
     #!/usr/bin/bash
-    source /usr/lib/ujust/ujust.sh
+
     echo "This is an example toggle command."
     echo "Current status: [check your status here]"
-    OPTION=$(Choose "Enable" "Disable" "Cancel")
+    OPTION=$(gum choose "Enable" "Disable" "Cancel")
     case "$OPTION" in
         "Enable")
             echo "Enabling feature..."
@@ -82,7 +82,7 @@ clean-containers:
 [group('Maintenance')]
 update-and-reboot:
     #!/usr/bin/bash
-    source /usr/lib/ujust/ujust.sh
+
     echo "Updating system..."
     sudo bootc upgrade
     if gum confirm "Reboot now to apply updates?"; then
