@@ -104,7 +104,7 @@ teardown() {
     [ "$status" -eq 0 ]
 
     mapfile -t calls <"${DNF5_LOG}"
-    [ "${#calls[@]}" -eq 8 ]
+    [ "${#calls[@]}" -eq 14 ]
 
     # Fedora-native session packages (10-build.sh owns the rest). quickshell
     # is NOT here: Fedora's 0.2.x lacks the `//@ pragma` directives the DMS
