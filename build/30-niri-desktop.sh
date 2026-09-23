@@ -49,18 +49,18 @@ echo "::group:: Install niri and session support packages"
 # start limit and the boot ends on niri's frozen startup spinner. See the
 # quickshell note in the COPR block below for the ordering constraint.
 dnf5 install -y \
-    niri \
-    xwayland-satellite \
-    xdg-desktop-portal-gnome \
-    xdg-desktop-portal-gtk \
-    matugen \
-    dgop \
-    cava \
-    qt6-qtmultimedia \
-    wl-clipboard \
-    cliphist \
-    i2c-tools \
-    accountsservice
+  niri \
+  xwayland-satellite \
+  xdg-desktop-portal-gnome \
+  xdg-desktop-portal-gtk \
+  matugen \
+  dgop \
+  cava \
+  qt6-qtmultimedia \
+  wl-clipboard \
+  cliphist \
+  i2c-tools \
+  accountsservice
 
 echo "niri session stack installed"
 echo "::endgroup::"
@@ -86,6 +86,10 @@ copr_install_isolated "avengemedia/danklinux" quickshell dms-greeter danksearch
 # dms: DankMaterialShell (shell + `dms` CLI, ships dms.service user unit)
 copr_install_isolated "avengemedia/dms" dms
 
+copr_install_isolated "wezfurlong/wezterm-nightly" wezterm
+
+copr_install_isolated "scottames/ghostty" ghostty
+
 echo "::endgroup::"
 
 echo "::group:: Remove the GNOME session"
@@ -94,10 +98,10 @@ echo "::group:: Remove the GNOME session"
 # these packages. dnf5 cascades the removal to installed dependents
 # (e.g. gnome-shell-extension-*).
 dnf5 remove -y \
-    gnome-shell \
-    gnome-session \
-    gnome-session-wayland-session \
-    gdm
+  gnome-shell \
+  gnome-session \
+  gnome-session-wayland-session \
+  gdm
 
 echo "GNOME session removed"
 echo "::endgroup::"
@@ -110,7 +114,7 @@ echo "::group:: Start DMS with the niri session"
 # niri.service.wants makes DMS start with niri and stop when it exits.
 mkdir -p /usr/lib/systemd/user/niri.service.wants
 ln -sfn /usr/lib/systemd/user/dms.service \
-    /usr/lib/systemd/user/niri.service.wants/dms.service
+  /usr/lib/systemd/user/niri.service.wants/dms.service
 
 echo "::endgroup::"
 
@@ -163,10 +167,10 @@ PROBE
 qs_log="$(XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-${probe_dir}}" qs -p "${probe_dir}" 2>&1 || true)"
 rm -rf "${probe_dir}"
 if grep -q 'Unrecognized pragma' <<<"${qs_log}"; then
-    echo "ERROR: installed quickshell cannot parse the DMS shells:"
-    echo "${qs_log}"
-    rpm -q quickshell
-    exit 1
+  echo "ERROR: installed quickshell cannot parse the DMS shells:"
+  echo "${qs_log}"
+  rpm -q quickshell
+  exit 1
 fi
 echo "quickshell pragma gate passed"
 echo "::endgroup::"
