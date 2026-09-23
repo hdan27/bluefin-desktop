@@ -8,7 +8,6 @@
 # sandbox equivalents:
 #   /usr/lib/ujust/ujust.sh -> ${UJUST_LIB}          (stub providing Choose)
 #   /etc/group              -> ${GROUP_FILE}
-#   /usr/lib/group          -> ${SYSTEM_GROUP_FILE}
 # Everything else (gum, brew, stress-ng, podman, bootc, sudo, systemctl,
 # usermod) is a PATH mock, so nothing runs against the host.
 
@@ -25,8 +24,7 @@ _extract_recipe() {
         found && /^[^[:space:]]/ { exit }
         found { sub(/^    /, ""); print }
     ' "${SYSTEM_JUST}" \
-        | sed -e 's|/usr/lib/ujust/ujust.sh|${UJUST_LIB}|g' \
-              -e 's|/usr/lib/group|${SYSTEM_GROUP_FILE}|g' \
+        | sed -e 's|/usr/lib/group|${SYSTEM_GROUP_FILE}|g' \
               -e 's|/etc/group|${GROUP_FILE}|g' \
               -e 's|{{ `id -un` }}|$(id -un)|g' > "${out_file}"
     chmod +x "${out_file}"
@@ -47,19 +45,13 @@ setup() {
     mkdir -p "${MOCKDIR}"
     : > "${COMMAND_LOG}"
 
-    # Stand-in for /usr/lib/ujust/ujust.sh: only Choose is used by these recipes.
-    cat > "${WORKDIR}/ujust.sh" <<'LIB'
-Choose() {
-    echo "Choose $*" >> "${COMMAND_LOG}"
-    echo "${MOCK_CHOICE:-Cancel}"
-}
-LIB
-
-    # gum confirm honours MOCK_CONFIRM (0 = yes, 1 = no).
+    # gum mock: `confirm` honours MOCK_CONFIRM (0 = yes, 1 = no);
+    # `choose` logs its options and answers with MOCK_CHOICE.
     _write_mock "gum" <<'MOCK'
 #!/usr/bin/bash
 echo "gum $*" >> "${COMMAND_LOG}"
-[ "$1" = "confirm" ] && exit "${MOCK_CONFIRM:-0}"
+if [ "$1" = "confirm" ]; then exit "${MOCK_CONFIRM:-0}"; fi
+if [ "$1" = "choose" ]; then echo "${MOCK_CHOICE:-Cancel}"; fi
 exit 0
 MOCK
 
@@ -72,7 +64,6 @@ MOCK
     done
 
     export COMMAND_LOG
-    export UJUST_LIB="${WORKDIR}/ujust.sh"
     export GROUP_FILE="${WORKDIR}/etc-group"
     export SYSTEM_GROUP_FILE="${WORKDIR}/usr-lib-group"
     printf 'root:x:0:\n' > "${GROUP_FILE}"
@@ -92,7 +83,7 @@ _run_recipe() {
     shift
     _extract_recipe "${recipe}" "${WORKDIR}/${recipe}.sh"
     run env PATH="${PATH}" HOME="${HOME}" COMMAND_LOG="${COMMAND_LOG}" \
-        UJUST_LIB="${UJUST_LIB}" GROUP_FILE="${GROUP_FILE}" \
+        GROUP_FILE="${GROUP_FILE}" \
         SYSTEM_GROUP_FILE="${SYSTEM_GROUP_FILE}" "$@" \
         /usr/bin/bash "${WORKDIR}/${recipe}.sh"
 }
@@ -208,7 +199,7 @@ _log_line() {
 @test "toggle-example-feature offers exactly Enable, Disable and Cancel" {
     _run_recipe "toggle-example-feature" MOCK_CHOICE=Cancel
 
-    grep -qF "Choose Enable Disable Cancel" "${COMMAND_LOG}"
+    grep -qF "gum choose Enable Disable Cancel" "${COMMAND_LOG}"
 }
 
 @test "clean-containers prunes images before volumes" {

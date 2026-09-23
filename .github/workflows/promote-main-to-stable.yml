@@ -32,7 +32,7 @@ concurrency:
 jobs:
   promote:
     name: Promote main to stable
-    uses: projectbluefin/actions/.github/workflows/reusable-promote-squash.yml@e2ccd51b41d9bb3abd9caeac626fb15c95589c3c # v1
+    uses: projectbluefin/actions/.github/workflows/reusable-promote-squash.yml@9d9e2a467dfe51af6cda1f3f6ec242a3dc44b487 # v1
     with:
       variants: >-
         [{"image":"${{ github.event.repository.name }}"}]
@@ -45,4 +45,9 @@ jobs:
       # and verifies its cosign signature. Enable the OPTIONAL keyless signing
       # step in build-image.yml for the gate to report release/ready.
       run_e2e: false
+      # Personal-account fork: there is no <owner>/maintainers team, and the
+      # reusable's default reviewer request (`gh pr create --reviewer`) would
+      # fail the upsert step under set -euo pipefail. The reusable exposes
+      # this input to skip reviewer requests entirely.
+      request_reviewer: false
     secrets: inherit
