@@ -4,12 +4,12 @@ This directory contains Flatpak preinstall configuration files that will be copi
 
 ## What is Flatpak Preinstall?
 
-Flatpak preinstall is a feature that allows system administrators to define Flatpak applications that should be installed on first boot. These files are read by the Flatpak system integration and automatically install the specified applications.
+Flatpak preinstall is a feature that allows system administrators to define Flatpak applications that should be installed on first boot. The `flatpak-preinstall.service` systemd unit runs `/usr/libexec/flatpak-preinstall` (installed by [`build/10-build.sh`](../../build/10-build.sh) from [`build/config/flatpak-preinstall/`](../../build/config/flatpak-preinstall/)), which parses these files and installs the specified applications with stock flatpak.
 
 ## How It Works
 
-1. **During Build**: Files in this directory are copied to `/usr/share/flatpak/preinstall.d/` in the image
-2. **On First Boot**: After user setup completes, the system reads these files and installs the specified Flatpaks
+1. **During Build**: Files in this directory are copied to `/usr/share/flatpak/preinstall.d/` in the image, and the `flatpak-preinstall` runner + service are installed
+2. **On Boot**: `flatpak-preinstall.service` (WantedBy `multi-user.target`, retries on network failure) parses the staged files and installs the Flatpaks from Flathub
 3. **User Experience**: Applications appear automatically after first login
 
 ## Important: Installation Timing
@@ -17,7 +17,7 @@ Flatpak preinstall is a feature that allows system administrators to define Flat
 **Flatpaks are NOT included in the ISO or container image.** They are downloaded and installed after:
 - User completes initial system setup
 - Network connection is established
-- First boot process runs `flatpak preinstall`
+- First boot process runs `flatpak-preinstall.service`
 
 This means:
 - The ISO remains small and bootable offline

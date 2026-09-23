@@ -9,7 +9,7 @@ This directory contains Just recipe files that will be installed into your custo
 ## How It Works
 
 1. **During Build**: All `.just` files in this directory are consolidated and copied to `/usr/share/ublue-os/just/60-custom.just` in the image
-2. **Automatic Import**: The base `ublue-os-just` package imports `60-custom.just`; Bluefin recipes from `projectbluefin/common` remain available in the build context but are not installed by default
+2. **Automatic Import**: `build/10-build.sh` installs `ujust` and the entry justfile (`00-entry.just`) from the `@projectbluefin/common` OCI, and `00-entry.just` imports `60-custom.just`. Bluefin-specific recipes and services from common are deliberately not installed
 3. **After Installation**: Users run `ujust` to see available commands
 4. **User Experience**: Simple command interface for system tasks
 
@@ -97,9 +97,9 @@ Use `gum` for interactive prompts. The template installs it at build time becaus
 ```just
 interactive-command:
     #!/usr/bin/bash
-    source /usr/lib/ujust/ujust.sh  # Provides Choose() and other helpers
-    OPTION=$(Choose "Option 1" "Option 2" "Cancel")
+    OPTION=$(gum choose "Option 1" "Option 2" "Cancel")
     echo "You chose: $OPTION"
+
 ```
 
 ## Common Use Cases
@@ -162,11 +162,12 @@ install-fonts:
 
 ## Available Helpers
 
-Universal Blue images include helpers in `/usr/lib/ujust/ujust.sh`:
+Use `gum` (installed at build time) for interactive prompts — it is what the
+entry recipes themselves use:
 
-- `Choose()` - Present multiple choice menu
-- `Confirm()` - Yes/no prompt
-- Color variables: `${bold}`, `${normal}`, etc.
+- `gum choose "A" "B" "Cancel"` - multiple choice menu
+- `gum confirm "Question?"` - yes/no prompt (non-zero exit on "no")
+- `gum style`, `gum spin`, `gum input` - formatting and input
 
 ## Testing Your Commands
 

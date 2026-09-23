@@ -16,6 +16,6 @@
 # lines beginning with `#` are ignored.
 #
 # See #324.
-build/*.sh
+build/**/*.sh
 local-install.sh
 .github/actions/**/*.sh
