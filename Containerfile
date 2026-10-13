@@ -35,7 +35,7 @@
 
 # OCI context images - imported below and pinned directly in their FROM lines.
 # The base image is pinned in the FROM line below and updated by Renovate.
-FROM ghcr.io/projectbluefin/common:latest@sha256:63cf8aed320cbdcf371a8f83773a8ea32e2387fe4d8a9ce4747f587cccc956e2 AS common
+FROM ghcr.io/projectbluefin/common:latest@sha256:69818bf780374ab0c6ce11999b246d5ef7353f3c234f2485deb5cd339671826a AS common
 FROM ghcr.io/ublue-os/brew:latest@sha256:5bdf54dc7c21c22db29df6550e3711788719c5123549ea6dc5645d5af47795e3 AS brew
 
 # Context stage - combine local and imported OCI container resources
