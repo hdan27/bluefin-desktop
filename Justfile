@@ -2,7 +2,7 @@ export IMAGE_NAME := env("IMAGE_NAME", "finpilot")
 export DEFAULT_TAG := env("DEFAULT_TAG", "stable")
 export PODMAN := env("PODMAN", "podman")
 export REPO_ORG := env("GITHUB_REPOSITORY_OWNER", "projectbluefin")
-export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest@sha256:fcf6e822d93d9f3edbb8a09db0226b7e211ec732e8ad0199b89f22b13b94ebf6")
+export bib_image := env("BIB_IMAGE", "quay.io/centos-bootc/bootc-image-builder:latest@sha256:0c956023e79895db8bee8f7a973b6db5bae6d98d5f69db194135ca1649e51cd5")
 
 alias build-vm := build-qcow2
 alias rebuild-vm := rebuild-qcow2
